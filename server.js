@@ -426,8 +426,6 @@
 //   });
 // });
 
-// iske upr raat ko kiya 12 bje k krib
-
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -449,7 +447,7 @@ if (!fs.existsSync(uploadsDir)) {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ Serve uploaded files safely with correct MIME type
+// ✅ Serve uploaded files with proper MIME types
 app.use("/uploads", (req, res, next) => {
   const filePath = path.join(uploadsDir, req.path);
   if (fs.existsSync(filePath)) {
@@ -464,7 +462,8 @@ app.use("/uploads", express.static(uploadsDir));
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3001",
-  "https://paradiseyatra.com", // ✅ Your live frontend
+  "https://paradiseyatra.com",
+  "https://frontendparadise-frontend.glwcvg.easypanel.host",
   process.env.CLIENT_ORIGIN,
 ].filter(Boolean);
 
@@ -491,49 +490,30 @@ const connectDB = async () => {
   }
 };
 
-// ✅ Import routes manually (avoid dynamic loader issues)
-const authRoute = require("./routes/auth");
-const packagesRoute = require("./routes/packages");
-const destinationsRoute = require("./routes/destinations");
-const blogsRoute = require("./routes/blogs");
-const adminRoute = require("./routes/admin");
-const testimonialsRoute = require("./routes/testimonials");
-const heroRoute = require("./routes/hero");
-const headerRoute = require("./routes/header");
-const ctaRoute = require("./routes/cta");
-const holidayTypesRoute = require("./routes/holidayTypes");
-const uploadRoute = require("./routes/upload");
-const fixedDeparturesRoute = require("./routes/fixedDepartures");
-const footerRoute = require("./routes/footer");
-const locationsRoute = require("./routes/locations");
-const seoRoute = require("./routes/seo");
-const faqRoute = require("./routes/faq");
-const leadRoute = require("./routes/lead"); // ✅ MANUAL IMPORT FIX
-
-// ✅ Register routes
-app.use("/api/auth", authRoute);
-app.use("/api/packages", packagesRoute);
-app.use("/api/destinations", destinationsRoute);
-app.use("/api/blogs", blogsRoute);
-app.use("/api/admin", adminRoute);
-app.use("/api/testimonials", testimonialsRoute);
-app.use("/api/hero", heroRoute);
-app.use("/api/header", headerRoute);
-app.use("/api/cta", ctaRoute);
-app.use("/api/holiday-types", holidayTypesRoute);
-app.use("/api/upload", uploadRoute);
-app.use("/api/fixed-departures", fixedDeparturesRoute);
-app.use("/api/footer", footerRoute);
-app.use("/api/locations", locationsRoute);
-app.use("/api/seo", seoRoute);
-app.use("/api/faq", faqRoute);
-app.use("/api/lead", leadRoute); // ✅ FULLY WORKING ROUTE
+// ✅ Routes
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/packages", require("./routes/packages"));
+app.use("/api/destinations", require("./routes/destinations"));
+app.use("/api/blogs", require("./routes/blogs"));
+app.use("/api/admin", require("./routes/admin"));
+app.use("/api/testimonials", require("./routes/testimonials"));
+app.use("/api/hero", require("./routes/hero"));
+app.use("/api/header", require("./routes/header"));
+app.use("/api/cta", require("./routes/cta"));
+app.use("/api/holiday-types", require("./routes/holidayTypes"));
+app.use("/api/upload", require("./routes/upload"));
+app.use("/api/fixed-departures", require("./routes/fixedDepartures"));
+app.use("/api/footer", require("./routes/footer"));
+app.use("/api/locations", require("./routes/locations"));
+app.use("/api/seo", require("./routes/seo"));
+app.use("/api/faq", require("./routes/faq"));
+app.use("/api/lead", require("./routes/lead")); // ✅ Lead form route
 
 // ✅ Health Check
 app.get("/", (req, res) => {
   res.json({
     success: true,
-    message: "🚀 Paradise Yatra API is running successfully!",
+    message: "🚀 Paradise Yatra Backend is running successfully!",
   });
 });
 
@@ -571,3 +551,149 @@ connectDB().then(() => {
     }
   });
 });
+
+// iske upr raat ko kiya 12 bje k krib
+
+// const express = require("express");
+// const mongoose = require("mongoose");
+// const cors = require("cors");
+// const dotenv = require("dotenv");
+// const path = require("path");
+// const fs = require("fs");
+// const mime = require("mime-types");
+
+// dotenv.config();
+// const app = express();
+
+// // ✅ Ensure uploads folder exists
+// const uploadsDir = path.join(__dirname, "uploads");
+// if (!fs.existsSync(uploadsDir)) {
+//   fs.mkdirSync(uploadsDir, { recursive: true });
+// }
+
+// // ✅ Middleware
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
+
+// // ✅ Serve uploaded files safely with correct MIME type
+// app.use("/uploads", (req, res, next) => {
+//   const filePath = path.join(uploadsDir, req.path);
+//   if (fs.existsSync(filePath)) {
+//     const contentType = mime.lookup(filePath) || "application/octet-stream";
+//     res.setHeader("Content-Type", contentType);
+//   }
+//   next();
+// });
+// app.use("/uploads", express.static(uploadsDir));
+
+// // ✅ CORS Configuration
+// const allowedOrigins = [
+//   "http://localhost:3000",
+//   "http://localhost:3001",
+//   "https://paradiseyatra.com", // ✅ Your live frontend
+//   process.env.CLIENT_ORIGIN,
+// ].filter(Boolean);
+
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       if (!origin) return callback(null, true);
+//       if (allowedOrigins.includes(origin)) return callback(null, true);
+//       console.warn(`⚠️ CORS blocked origin: ${origin}`);
+//       return callback(new Error("Not allowed by CORS"));
+//     },
+//     credentials: true,
+//   })
+// );
+
+// // ✅ MongoDB Connection
+// const connectDB = async () => {
+//   try {
+//     await mongoose.connect(process.env.MONGODB_URI);
+//     console.log("✅ MongoDB connected successfully");
+//   } catch (error) {
+//     console.error("❌ MongoDB connection failed:", error.message);
+//     process.exit(1);
+//   }
+// };
+
+// // ✅ Import routes manually (avoid dynamic loader issues)
+// const authRoute = require("./routes/auth");
+// const packagesRoute = require("./routes/packages");
+// const destinationsRoute = require("./routes/destinations");
+// const blogsRoute = require("./routes/blogs");
+// const adminRoute = require("./routes/admin");
+// const testimonialsRoute = require("./routes/testimonials");
+// const heroRoute = require("./routes/hero");
+// const headerRoute = require("./routes/header");
+// const ctaRoute = require("./routes/cta");
+// const holidayTypesRoute = require("./routes/holidayTypes");
+// const uploadRoute = require("./routes/upload");
+// const fixedDeparturesRoute = require("./routes/fixedDepartures");
+// const footerRoute = require("./routes/footer");
+// const locationsRoute = require("./routes/locations");
+// const seoRoute = require("./routes/seo");
+// const faqRoute = require("./routes/faq");
+// const leadRoute = require("./routes/lead"); // ✅ MANUAL IMPORT FIX
+
+// // ✅ Register routes
+// app.use("/api/auth", authRoute);
+// app.use("/api/packages", packagesRoute);
+// app.use("/api/destinations", destinationsRoute);
+// app.use("/api/blogs", blogsRoute);
+// app.use("/api/admin", adminRoute);
+// app.use("/api/testimonials", testimonialsRoute);
+// app.use("/api/hero", heroRoute);
+// app.use("/api/header", headerRoute);
+// app.use("/api/cta", ctaRoute);
+// app.use("/api/holiday-types", holidayTypesRoute);
+// app.use("/api/upload", uploadRoute);
+// app.use("/api/fixed-departures", fixedDeparturesRoute);
+// app.use("/api/footer", footerRoute);
+// app.use("/api/locations", locationsRoute);
+// app.use("/api/seo", seoRoute);
+// app.use("/api/faq", faqRoute);
+// app.use("/api/lead", leadRoute); // ✅ FULLY WORKING ROUTE
+
+// // ✅ Health Check
+// app.get("/", (req, res) => {
+//   res.json({
+//     success: true,
+//     message: "🚀 Paradise Yatra API is running successfully!",
+//   });
+// });
+
+// // ✅ 404 Handler
+// app.use("*", (req, res) => {
+//   res.status(404).json({ success: false, message: "Route not found" });
+// });
+
+// // ✅ Global Error Handler
+// app.use((err, req, res, next) => {
+//   console.error("❌ Error:", err.stack);
+//   res.status(500).json({
+//     success: false,
+//     message: "Internal Server Error",
+//     error: process.env.NODE_ENV === "development" ? err.message : undefined,
+//   });
+// });
+
+// // ✅ Start Server
+// const PORT = process.env.PORT || 5000;
+// connectDB().then(() => {
+//   const server = app.listen(PORT, () => {
+//     console.log(`🌍 Server running on port ${PORT}`);
+//   });
+
+//   server.on("error", (error) => {
+//     if (error.code === "EADDRINUSE") {
+//       const newPort = PORT + 1;
+//       console.warn(`⚠️ Port ${PORT} in use. Retrying on ${newPort}...`);
+//       app.listen(newPort, () =>
+//         console.log(`✅ Server running on port ${newPort}`)
+//       );
+//     } else {
+//       console.error("Server startup error:", error);
+//     }
+//   });
+// });
